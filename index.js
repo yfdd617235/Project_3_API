@@ -16,6 +16,11 @@ function getpokeinfo(pokename){
         let pokemon = pokeIndex[`${pokename}`];
         console.log(pokemon.url)
     });
+
+
+//FALTA EL CATCH XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+
 }
 
 function Send(){

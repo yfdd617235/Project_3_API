@@ -7,8 +7,15 @@
 </head>
 <body>
     <div>
-        <input type="text" id="name">
+        <label for="name">Choose a Pokemon</label><br>
+        <input type="text" id="name" list="pokemon-list">
+        <datalist id="pokemon-list">
+
+        </datalist>
     </div>
+    <img id="miImagen" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/255.png" alt="Imagen">
+   
+    <img id="miImagen" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png" alt="Imagen">
     <div>
         <button id="Send" onclick="Send()">Send</button>
     </div>

@@ -1,0 +1,53 @@
+
+body{  
+    display: flex;
+    flex-direction: column;
+}
+
+#navbar{
+    position: fixed;
+    top: 0; 
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: rgb(33, 101, 139);
+    color: white;
+}
+
+#logo{
+    height: 50px;
+}
+
+#pokeSelect{
+    border: solid orange;
+    padding: 5%;
+    margin-top: 5%;
+}
+
+#tableContainer{
+    margin: 10%;
+}
+
+
+table td, table th {
+    text-align: center;
+    vertical-align: middle;
+}
+
+
+footer, hr{
+    padding-top: 1px;
+    text-align: center;
+    background-color: black;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    #data, footer {
+        font-size:x-small; /* Tamaño de fuente ajustado para dispositivos móviles */
+    }
+
+    #navbar{
+        font-size: smaller;
+    }
+}

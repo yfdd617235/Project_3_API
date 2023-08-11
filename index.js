@@ -1,36 +1,13 @@
 const pokeIndex = []
 const datalist = document.getElementById('pokemon-list');
+let pokeMList = [];
 
-async function getpokeinfo(){
-    try {
-        const response = await axios.get(`https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0`);
-
-        // console.log("data",response.data)
-
-        pokeList = response.data.results;
-        // console.log("pokeList",pokeList);
-
-        pokeList.forEach(x => {
-        pokeIndex[x.name] = x;
-        }); //Index the array with the name 
-
-        // console.log("pokeIndex",pokeIndex);
-        return pokeIndex;
-
-    } catch (error) {
-        console.error(error);
-        alert("It was not possible to access data-base")
-    }
-    
-    };
-
-
+//DROPDOWN LIST
 async function List(){
-    await getpokeinfo();
+    pokeMasterList = await getData();
     // console.log("pokeIndex",pokeIndex);
-    const pokemonNames = Object.keys(pokeIndex);
+    const pokemonNames = Object.keys(pokeMasterList);
     // console.log("pokemonNames",pokemonNames);
-
     pokemonNames.forEach(x => {
         const option = document.createElement("option");
         option.value = x;
@@ -38,44 +15,67 @@ async function List(){
     })
 }
 
-function pokeId(){
-    const EnterPoke = document.getElementById("name").value.toLowerCase();
+//TAKE ID FROM PLACEHOLDER AND CALL CHART AND IMG
+async function pokeId(){
+    const enterPoke = document.getElementById("name").value.toLowerCase();
+    // console.log("enterPoke", enterPoke);
+    pokeMasterList = await getData();
+    let pokemon = pokeMasterList[enterPoke];
+    let pokemonId = pokemon.id;
+    let pokemonImg1 = pokemon.img1;
+    // console.log(pokemonImg1)
+    // console.log("PokemonId:",pokemonId)
+    let statsResult = await stats(pokemonId);
+    let keysArray = statsResult.keysArray;
+    let valuesArray = statsResult.valuesArray;
 
-    PokeUrl = pokeIndex[EnterPoke].url;
-    console.log("PokeUrl", EnterPoke, PokeUrl);
+    // valuesArray = [344,14,13,1,24,1]
+
+    printChart(keysArray, valuesArray);
+    setCard(pokemonImg1, enterPoke);
     
 }
 
-async function stats(pokeid){
+//GET STATS
+async function stats(id){
     try {
-        const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokeid}/`);
-        
-
+        const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}/`);
         let pokeStats = [];
         
         for(let i = 0; i< response.data.stats.length; i++){
             let myObject = {[response.data.stats[i].stat.name] : response.data.stats[i].base_stat}
             pokeStats.push(myObject); 
         }
-        // console.log("pokeStats",pokeStats)
-        // console.log(response.data.forms[0].url)
-        // console.log(response.data.name)
+         console.log("pokeStats",pokeStats)
 
-        return pokeStats;
+        const keysArray = [];
+        const valuesArray = [];
+
+        for (const x of pokeStats) {
+        const key = Object.keys(x)[0];
+        const value = x[key];
+
+        keysArray.push(key);
+        valuesArray.push(value);
+        }
+        console.log('Array de claves:', keysArray);
+        console.log('Array de valores:', valuesArray);
+
+        return {
+            keysArray: keysArray,
+            valuesArray: valuesArray
+        };
+
     } catch (error) {
         console.error(error);
-        alert("Pokemon is not in Data-List")
+        alert("Error geting Stats")
     }
 }
 
-// pokeid = 25
-// stats(pokeid)
-
-
-
-async function gett(){
+//GET POKEAPI DATA
+async function getData(){
     let pokeMasterList = [];
-    let pokeMList = [];
+    
     try {
         const response = await axios.get(`https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0`);
 
@@ -83,6 +83,7 @@ async function gett(){
         // console.log("Number of Poke:", numberOfPoke);
         const results = response.data.results;
         // console.log("Results:", results);
+
 
         results.map(poke => {
             // console.log(poke)
@@ -105,8 +106,8 @@ async function gett(){
         })
 
         // console.log("Pokemon Master List:", pokeMList)
-        // console.log("viewccc", pokeMasterList)
-        console.log("viewccc", pokeMasterList)
+        // console.log("pokeMasterList", pokeMasterList)
+        
 
         return pokeMasterList;
 
@@ -116,42 +117,72 @@ async function gett(){
     }
 }
 
-let pokeMasterList = gett()
-
-async function lastList(){
-
-    try {
-        let pokeMasterList = await gett();
-        console.log("Last List", pokeMasterList);
-        const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/`);
-        console.log("Last List", response.data.results[2]);
-
-    } catch (error) {
-        console.error(error);
-        alert("Last List error")
+//SET CHART JS
+let myChart = null;
+printChart([0,0,0,0,0,0],[0,0,0,0,0,0])
+function printChart(keysArray, valuesArray) {
+    if (myChart) {
+        myChart.destroy(); // Destruye el gráfico anterior si existe
     }
+
+    const ctx = document.getElementById('myChart');
+
+    myChart = new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: keysArray,
+            datasets: [{
+                label: 'Pokemon Stats',
+                
+                data: valuesArray,
+                borderWidth: 3
+            }]
+        },
+        options: {
+            scales: {
+                r: {
+                    beginAtZero: true,
+                    suggestedMin: 0,
+                    suggestedMax: 200,
+                    ticks: {
+                        stepSize: 25,
+                    }
+                }
+            }
+        }
+    });
 }
 
-lastList()
+
+//SET CARD
+function setCard(img, name) {
+    const imgContainer = document.querySelector('.card-img-top');
+    imgContainer.src = img;
+
+    name = name.toUpperCase();
+    const nameContainer = document.querySelector(`.card-title`);
+    nameContainer.textContent = name;
+}
+
+//CREATE TABLE
+async function table(){
+    await getData();
+    let tableBody = document.getElementById("tbody");
+
+    // console.log(pokeMList[0].id)
+
+    pokeMList.forEach(x => {
+        let row = tableBody.insertRow();
+        row.insertCell(0).innerHTML = x.id;
+        row.insertCell(1).innerHTML = x.name;
+        row.insertCell(2).innerHTML = `<img src="${x.img2}" alt="${x.name}" class="poke-img">`;
+    })
+
+}
+
+table()
 
 
 
 
-// let poke = { name: 'bulbasaur', url: 'https://pokeapi.co/api/v2/pokemon/2333333/' };
-
-// // Divide the URL in parts using '/'
-// let urlParts = poke.url.split('/');
-
-// // Get the penultimate element
-// let idStr = urlParts[urlParts.length - 2];
-
-// // Convert the string to an integer
-// let id = parseInt(idStr);
-
-// console.log("ID:", id);
-
-// poke.id = id;
-
-// // console.log("ID:", id);
-// // console.log("Modified Pokemon:", poke);
 

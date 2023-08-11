@@ -24,6 +24,13 @@ body{
     margin-top: 5%;
 }
 
+.col{
+    align-items: center;
+    justify-content: center;
+    border: solid;
+    padding: 5%;
+}
+
 #tableContainer{
     margin: 10%;
 }

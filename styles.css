@@ -10,8 +10,10 @@ body{
     display: flex;
     align-items: center;
     padding: 10px;
-    background-color: rgb(33, 101, 139);
-    color: white;
+    color: black;
+    /* background-image: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 1)),
+    linear-gradient(rgb(15, 36, 133), rgb(0, 38, 255)); */
+    background-color: rgb(255, 238, 0);
 }
 
 #logo{

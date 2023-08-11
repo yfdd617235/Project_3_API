@@ -17,7 +17,7 @@ async function List(){
 
 //TAKE ID FROM PLACEHOLDER AND CALL CHART AND IMG
 async function pokeId(){
-    const enterPoke = document.getElementById("name").value.toLowerCase();
+    const enterPoke = document.getElementById("name").value.toLowerCase().trim();
     // console.log("enterPoke", enterPoke);
     pokeMasterList = await getData();
     let pokemon = pokeMasterList[enterPoke];

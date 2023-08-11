@@ -27,7 +27,7 @@ body{
 .col{
     align-items: center;
     justify-content: center;
-    border: solid;
+    /* border: solid; */
     padding: 5%;
 }
 

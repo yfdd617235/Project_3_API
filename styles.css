@@ -19,7 +19,7 @@ body{
 }
 
 #pokeSelect{
-    border: solid orange;
+    /* border: solid orange; */
     padding: 5%;
     margin-top: 5%;
 }

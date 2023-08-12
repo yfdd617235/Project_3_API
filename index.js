@@ -1,9 +1,22 @@
+import printChart from "./functions.js";
+import { setCard } from "./functions.js";
+
+
 const pokeIndex = []
 const datalist = document.getElementById('pokemon-list');
 let pokeMList = [];
+let pokeMasterList = [];
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    const inputElement = document.getElementById("name");
+    
+    inputElement.addEventListener("mouseover", Lists);
+    inputElement.addEventListener("input", pokeId);
+});
 
 //DROPDOWN LIST
-async function List(){
+async function Lists(){
     pokeMasterList = await getData();
     // console.log("pokeIndex",pokeIndex);
     const pokemonNames = Object.keys(pokeMasterList);
@@ -34,42 +47,6 @@ async function pokeId(){
     printChart(keysArray, valuesArray);
     setCard(pokemonImg1, enterPoke);
     
-}
-
-//GET STATS
-async function stats(id){
-    try {
-        const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}/`);
-        let pokeStats = [];
-        
-        for(let i = 0; i< response.data.stats.length; i++){
-            let myObject = {[response.data.stats[i].stat.name] : response.data.stats[i].base_stat}
-            pokeStats.push(myObject); 
-        }
-         console.log("pokeStats",pokeStats)
-
-        const keysArray = [];
-        const valuesArray = [];
-
-        for (const x of pokeStats) {
-        const key = Object.keys(x)[0];
-        const value = x[key];
-
-        keysArray.push(key);
-        valuesArray.push(value);
-        }
-        console.log('Array de claves:', keysArray);
-        console.log('Array de valores:', valuesArray);
-
-        return {
-            keysArray: keysArray,
-            valuesArray: valuesArray
-        };
-
-    } catch (error) {
-        console.error(error);
-        alert("Error geting Stats")
-    }
 }
 
 //GET POKEAPI DATA
@@ -117,51 +94,40 @@ async function getData(){
     }
 }
 
-//SET CHART JS
-let myChart = null;
-printChart([0,0,0,0,0,0],[0,0,0,0,0,0])
-function printChart(keysArray, valuesArray) {
-    if (myChart) {
-        myChart.destroy(); // Destruye el gráfico anterior si existe
-    }
-
-    const ctx = document.getElementById('myChart');
-
-    myChart = new Chart(ctx, {
-        type: 'radar',
-        data: {
-            labels: keysArray,
-            datasets: [{
-                label: 'Pokemon Stats',
-                
-                data: valuesArray,
-                borderWidth: 3
-            }]
-        },
-        options: {
-            scales: {
-                r: {
-                    beginAtZero: true,
-                    suggestedMin: 0,
-                    suggestedMax: 200,
-                    ticks: {
-                        stepSize: 25,
-                    }
-                }
-            }
+//GET STATS
+async function stats(id){
+    try {
+        const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}/`);
+        let pokeStats = [];
+        
+        for(let i = 0; i< response.data.stats.length; i++){
+            let myObject = {[response.data.stats[i].stat.name] : response.data.stats[i].base_stat}
+            pokeStats.push(myObject); 
         }
-    });
-}
+         console.log("pokeStats",pokeStats)
 
+        const keysArray = [];
+        const valuesArray = [];
 
-//SET CARD
-function setCard(img, name) {
-    const imgContainer = document.querySelector('.card-img-top');
-    imgContainer.src = img;
+        for (const x of pokeStats) {
+        const key = Object.keys(x)[0];
+        const value = x[key];
 
-    name = name.toUpperCase();
-    const nameContainer = document.querySelector(`.card-title`);
-    nameContainer.textContent = name;
+        keysArray.push(key);
+        valuesArray.push(value);
+        }
+        console.log('Array de claves:', keysArray);
+        console.log('Array de valores:', valuesArray);
+
+        return {
+            keysArray: keysArray,
+            valuesArray: valuesArray
+        };
+
+    } catch (error) {
+        console.error(error);
+        alert("Error geting Stats")
+    }
 }
 
 //CREATE TABLE
@@ -181,8 +147,3 @@ async function table(){
 }
 
 table()
-
-
-
-
-
